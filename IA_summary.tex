@@ -1,0 +1,681 @@
+\documentclass[10pt,a4paper,landscape]{article}
+
+\usepackage{multicol}
+\usepackage{calc}
+\usepackage{ifthen}
+\usepackage[landscape]{geometry}
+\usepackage{hyperref}
+\usepackage{lipsum}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{mathstyle}
+\usepackage{mathtools}
+\usepackage{commath}
+\usepackage{comment}
+% \usepackage{enumerate}
+\usepackage{enumitem}
+\usepackage{siunitx}
+\usepackage{fancyhdr}
+\usepackage{extramarks}
+\usepackage{titlesec}
+\usepackage{listings}
+\usepackage{amssymb}
+\usepackage{bm}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{subfig}
+\usepackage{booktabs}
+\usepackage{float}
+
+\ifthenelse{\lengthtest { \paperwidth = 11in}}
+	{ \geometry{top=.5in,left=.5in,right=.5in,bottom=.5in} }
+	{\ifthenelse{ \lengthtest{ \paperwidth = 297mm}}
+		{\geometry{top=1cm,left=1cm,right=1cm,bottom=1cm} }
+		{\geometry{top=1cm,left=1cm,right=1cm,bottom=1cm} }
+	}
+
+%
+% Table Settings
+%
+
+\newcommand{\ra}[1]{\renewcommand{\arraystretch}{#1}}
+\ifthenelse{\lengthtest { \paperwidth = 11in}}
+	{ \geometry{top=.5in,left=.5in,right=.5in,bottom=.5in} }
+	{\ifthenelse{ \lengthtest{ \paperwidth = 297mm}}
+		{\geometry{top=1cm,left=1cm,right=1cm,bottom=1cm} }
+		{\geometry{top=1cm,left=1cm,right=1cm,bottom=1cm} }
+	}
+
+\newcommand{\specialcell}[2][c]
+{
+    \begin{tabular}[#1]{@{} c @{}}
+        #2
+    \end{tabular}
+}
+
+% Turn off header and footer
+\pagestyle{empty}
+
+% Redefine section commands to use less space
+\makeatletter
+\renewcommand{\section}{\@startsection{section}{1}{0mm}%
+                                {-1ex plus -.5ex minus -.2ex}%
+                                {0.5ex plus .2ex}%x
+                                {\normalfont\small\bfseries}}
+                                % {\normalfont\large\bfseries\sc}}
+\renewcommand{\subsection}{\@startsection{subsection}{2}{0mm}%
+                                {-1explus -.5ex minus -.2ex}%
+                                {0.5ex plus .2ex}%
+                                {\normalfont\small\bfseries}}
+\renewcommand{\subsubsection}{\@startsection{subsubsection}{3}{0mm}%
+                                {-1ex plus -.5ex minus -.2ex}%
+                                {1ex plus .2ex}%
+                                {\normalfont\small\bfseries}}
+\makeatother
+
+% % Define BibTeX command
+% \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+%     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+% Don't print section numbers
+% \setcounter{secnumdepth}{0}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt plus 0.5ex}
+
+%
+% Custom Math Operators
+%
+
+\DeclareMathOperator{\sinc}{sinc}
+\DeclareMathOperator{\rect}{rect}
+\DeclareMathOperator{\tri}{tri}
+
+\DeclareMathOperator{\bias}{bias}
+\DeclareMathOperator{\se}{se}
+\DeclareMathOperator{\mse}{MSE}
+\DeclareMathOperator{\ar}{arg}
+
+\DeclareMathOperator{\E}{\mathbb{E}\!}
+\DeclareMathOperator{\EE}{\mathbb{E}}
+\DeclareMathOperator{\V}{\mathbb{V}\!}
+\DeclareMathOperator{\p}{\mathbb{P}\!}
+\DeclareMathOperator{\pp}{\mathbb{P}}
+\DeclareMathOperator{\dd}{\mathrm{d}\!}
+
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\pfrac}[2]{\left(\frac{#1}{#2}\right)}
+
+
+% My definitions
+
+\def\*#1{\mathbf{#1}}
+\def\L{\mathcal{L}}
+\def\N{\mathcal{N}}
+
+\usepackage{enumitem}
+\setlist{leftmargin=10pt,topsep=0pt,itemsep=-1ex,partopsep=1ex,parsep=1ex}
+
+\def\labelitemi{--}
+% -----------------------------------------------------------------------
+
+\makeatletter
+\newenvironment{myalign*}{%
+  \setlength{\abovedisplayskip}{3pt}%
+  \setlength{\belowdisplayskip}{3pt}%
+  \start@align\@ne\st@rredtrue\m@ne
+}%
+{\endalign}
+\makeatother
+
+\begin{document}
+
+
+\raggedright
+\footnotesize
+\begin{multicols*}{2}
+
+
+% multicol parameters
+% These lengths are set only within the two main columns
+\setlength{\columnseprule}{0.25pt}
+% \def\columseprulecolor{\color{myblue}}
+\setlength{\premulticols}{1pt}
+\setlength{\postmulticols}{1pt}
+\setlength{\multicolsep}{1pt}
+\setlength{\columnsep}{2pt}
+
+\begin{center}
+     \large{\textbf{IA Cheat Sheet}} \\
+\end{center}
+
+% ========================================================
+
+%\tiny
+
+\section{Agents}
+
+\begin{itemize}
+	\item \textbf{Autonomy}: React themselves to observations of their environment without requiring explicit commands
+
+	\item \textbf{Reactivity}: Agents' actions respect the real-time constraints imposed by the environment
+	\item \textbf{Proactiveness}: Recognize and react to changes in the environment which present opportunities
+	\item \textbf{Rationality}: Choose best action given current situation
+	\item \textbf{Learning}: Learn to improve choices from past experience
+\end{itemize}
+
+% ========================================================
+
+\section{Reactive Agents}
+\subsection{Markov Decision Processes (MDP)}
+\begin{itemize}
+	\item State transitions are undeterministic 
+	\begin{myalign*}
+	    T(s, a, s') = p(s' |s, a)
+	\end{myalign*}
+	\item State values in MDP:
+	\begin{myalign*}
+	    V(s) &= \max_{\pi} E
+	    \left(
+	    	\sum_{t = 0}^{\infty} \gamma^t R(s, a_{\pi}(t))
+	    \right)
+	\end{myalign*}
+	\item \textbf{Value iteration}:
+	\begin{itemize}
+		\item First compute values
+		\begin{myalign*}
+		    &Q(s, a) \leftarrow R(s, a) + \gamma \sum_{s' \in S} T(s, a, s') V(s')\\
+		    &V(s) \leftarrow \max_a Q(s, a)
+		\end{myalign*}
+		\item Guaranteed to converge
+		\item Stop criterion: $\max_{s \in S} |V'(s) - V(s)| \leq \epsilon$
+
+		\item Compute policy: $\pi(s) = \argmax_{a} Q(s, a)$
+	\end{itemize}
+	\item \textbf{Policy iteration:}
+	\begin{itemize}
+		\item Optimize policy directly. 
+		\begin{myalign*}
+		    &V_{\pi}(s) \leftarrow R(s, \pi(s)) + \gamma \sum_{s' \in S} T(s, \pi(s),s')V_{\pi}(s')\\
+		    &\pi'(s) \leftarrow \argmax_{a} V_{\pi}(s)
+		\end{myalign*}
+		\item Stop when policy doesn't change anymore.
+	\end{itemize}
+	\item \textbf{Q-learning}
+	\begin{itemize}
+		\item Unknown models (R(..) and T(..))
+		\item Learn table $Q(s, a)$, starting with arbitrary initial values
+		\begin{myalign*}
+		    Q(s, a) &\leftarrow (1 - \alpha) Q(s, a) + \alpha (r + \gamma \max_{a'} Q(s', a'))
+		\end{myalign*}
+		with $\alpha$ the learning factor
+		\item Optimal policy
+		\begin{myalign*}
+		    \pi(a) = \argmax_{a} Q(s, a)
+		\end{myalign*}
+	\end{itemize}
+	\item \textbf{Partially Observable MDP, Belief MDP}
+	\begin{itemize}
+		\item Uncertainty of the current state
+		\item observations $o$ and belief $b$
+		\item transition function
+		\begin{myalign*}
+		    \tau(b, a, b') = \sum_{o | SE(b,a,o) = b'} p(o | a, b)
+		\end{myalign*}
+		\item reward function
+		\begin{myalign*}
+		     r(b, a) = \sum_{s \in S} b(s) R(s, a)
+		 \end{myalign*} 
+		 \item Solvable only if the space of states and actions is small
+		 \item Can be transformed into MDPs and then solved.
+	\end{itemize}
+\end{itemize}
+% ========================================================
+
+\section{Deliberative Agents}
+\begin{itemize}
+	\item Compute strategy for a particular scenario avoiding computations on unnecessary states.
+	\item Reward only given in goal state
+	\item \textbf{Depth-first}: always expand the first node found until there are no more successors.
+	\item \textbf{Depth-limited}: Impose a depth limit so we don't follow a dead-end path too far.
+	\item Optimization: Keep track of the best goal node and ignore branch with higher cost
+	\item \textbf{Breadth-first}: exploring the tree layer by layer (takes too much memory)
+	\item \textbf{Minimax search} others actions minimize payoff and our action maximize payoff.
+	\item \textbf{Alpha-Beta pruning}: Use DFS and abandon a branch as soon as
+	\begin{enumerate}
+		\item Opponent wouldn't allow us to get there
+		\item Already found a branch where opponent can do us less harm
+	\end{enumerate}
+	\item Doesn't work on games with chances.
+	\item \textbf{Expectiminimax}: game with chance, maximize expected return. Evaluation needs to average over all possible outcomes.
+	\item \textbf{Regret}: The difference in outcome between playing move i and playing the optimal move.
+	\item \textbf{Monte-Carlo Tree search}: concentrates on analysing the most promising moves, basing the expansion of the search tree on random sampling of the search space.
+	\item \textbf{Multi-Armed Bandit}: Maximize the sum of the reward over several plays
+	\item More sampling on more promising moves
+	\item \textbf{Bounding Regret}
+	\begin{itemize}
+		\item Initialization: play each arm once
+		\item Loop: play the jth arm that maximizes $\mu_j + \sqrt{\frac{2 \ln(n)}{n_j}}$
+		where $\mu_j$ is the average reward, $n$ the total number of plays so far and $n_j$ the number of plays with $j$
+	\end{itemize}
+\end{itemize}
+
+% ========================================================
+
+\section{Planning with Fact. Repr.}
+\begin{itemize}
+	\item States as combination of (important) features 
+	\item State as a vector of $k$ state variables
+	\item Formulate successor functions and rewards as functions on the vector of state variables.
+	\item Usefull for multi-agent (exchange features)
+	\item \textbf{Bayesian Networks}:
+	\begin{itemize}
+		\item Nodes = events e.i. $x_3 = c$ 
+		\item Edges = causation e.i. $(x_3 = c) \rightarrow (x_7 = d)$
+		\item Causation is uncertain
+		\begin{myalign*}
+		    (x_i \rightarrow x_j) \Rightarrow p(x_j | x_i)
+		\end{myalign*}
+		\item Model transitions by a separate Dynamic Bayesian Network for each action
+	\end{itemize}
+	\item Value function factored into basis functions
+	\begin{myalign*}
+	    V(X) = \sum w_i b_i
+	\end{myalign*}
+	\item $b_i$ are programmed by analysis of the system and $w_i$ are determined so that the overall mean square error is minimized
+	\item Better to use policy iteration.
+	\item \textbf{Situation Calculus (STRIPS)}
+	\begin{itemize}
+		\item States modelled by a set of propositions
+		\item Situation = partial models; we can drop unimportant propositions
+		\item Operators model agent actions by transforming situations
+		\item \textit{preconditions}: propositions which must be true in $S_i$ for the operator to be applicable
+		\item \textit{postconditions}: propositions which will be true in $S_{i + 1}$ as a result of the action. ADD-LIST
+		\item DELETE-LIST: propositions which will no longer be true in $S_{i + 1}$
+	\end{itemize}
+	\item \textbf{Graphplan}
+	\begin{itemize}
+		\item Consider what actions can be carried out simultaneously
+		\item Graph has layers which contains nodes for each possible actions and each possible proposition that could hold. 
+		\item Identify what actions can take place in parallel
+		\item After n levels, all levels of the graph will become identical so plan has at most n steps
+		\item Complete: No solution in Graphplan $\Rightarrow$ no plan exists
+		
+	\end{itemize}
+	\item \textbf{Satisfiability (SAT)}: %REM
+	\begin{itemize}
+		\item What truth assignment will make a collection of clauses simultaneously true.
+		\item Variables:
+		\begin{itemize}
+			\item each operator at each time instant
+			\item each proposition at each time instant
+		\end{itemize}
+		\item Constraints:
+		\begin{itemize}
+			\item each operator with preconditions in preceeding state
+			\item each operator with postconditions in following state
+			\item exclusions amonf propositions in each state
+			\item exclusions among operators using the same resource
+		\end{itemize}
+	\end{itemize}
+
+\end{itemize}
+% ========================================================
+
+\section{Multiagent Systems}
+\begin{itemize}
+	\item Delegation: central planner computes a plan for several agents
+	\item Mediated: each agent makes its own partial plans; mediator coordinates them
+	\item Distributed: each agent makes its own plans and coordinates through message exchange
+	\item \textbf{Blackboard systems}: centralized blackboard with current goals, states and agent's plans
+	\item \textbf{Partial-global-planning (PGP)}: each agent inserts its partial plans in the goal tree. \\
+	$\Rightarrow$ discover joint goals and combine plans.
+	\item \textbf{Publish-subscribe systems}: identify potential conflicts and create explicit objects for them. When an agent's plan involves the resource, all others are notified $\rightarrow$ detection of conflicts/ synergies. It uses peer-to-peer negotiations for optimal joint plan $\rightarrow$ D.CSP
+	\item \textbf{Ontologies}: shared concepts and vocabulary.\\
+	$\Rightarrow$ Communication among heterogenous agents
+
+	\item \textbf{Contract Nets (CN)}: task-sharing protocol:
+	\begin{itemize}
+		\item Agents can be \textit{contractors} or?and \textit{managers}.
+		\item When an agent cannot solve a task\\
+		$\Rightarrow$ breaks it down into sub-tasks\\
+		$\Rightarrow$ announces the sub-task to the CN \\
+		$\Rightarrow$ acts as a manager for this sub-task.
+		\item Bids are received from contractors and the winning contractor are awarded the job. 
+	\end{itemize}
+
+	\item \textbf{Market-based CNs}: managers set the prices
+\end{itemize}
+
+% ========================================================
+
+\section{Distributed Multiagent Systems}
+
+\begin{itemize}
+	\item \textbf{Social laws}: Common rules that all agents follow to avoid conflicts. Laws must allow $A$ to achieve goals. Find social laws is NP
+	\item \textbf{Distributed CNs}: Managers distribute tasks asynchronously and contacts agents directly.
+	\item \textbf{Marginal cost} to $A_i$ of task $t$ given a remaining set of tasks $T$:
+	\begin{myalign*}
+	    c_{add}(A_i, t) = cost(A_i, T \cup t) - cost(A_i, T)
+	\end{myalign*}
+	\item $A$ bid higher that marginal cost: make profit
+\end{itemize}
+
+\subsubsection{Constraint Satisfaction Problems}
+\begin{itemize}
+	\item Variables, domains, constraints, relations
+	\item Find solution such that for all constraints, value combinations are allowed by relations.
+	\item Solving a CSP: 
+	\begin{itemize}
+		\item backtrack search: assign one variable at a time, backtrack when no assignment without satisfying constraints
+		\item dyn. prog.: eliminate variables and replace by constraints until a single one remains
+		\item local s.: start with random assignment, make changes to reduce number of constraint violations
+	\end{itemize}
+\end{itemize}
+
+\subsubsection{Distributed CSP}
+\begin{itemize}
+ 	\item  task allocation, resource sharing, scheduling, all can be expressed as constraint satisfaction. 
+ 	\item Each variable belongs to one agent
+ 	\item \textbf{Centralized Backtr'}: gather all info' into a leader which solves the problem.
+ 	\item \textbf{Sync. Backtr'}: $A_0$ generates a partial sol',
+	$A_i$ generate an extension to this partial sol'
+ 	\item Allows common CSP heuristics such as forward checking and dynamic variable ordering yielding in strong efficiency gains
+ 	\item \textbf{Asynchronous Backtr'}: Agent work in parallel without sync. Global priority ordering among variables.
+ 	\item \textbf{Dynamic Programming}: replace variables by constraints \textbf{LEARN HOW TO DO IT!}
+
+ 	\item \textbf{Dist. local s.}: init variables arbitrarly and iteratively make local improvements. Low complexity but sub-opt. solutions
+
+ 	\item \textbf{Min-conflicts}: 
+ 	\begin{itemize}
+ 		\item random value to variables in parallel 
+ 		\item At each step, find the change in variable assigment which most reduces the number of conflicts.
+ 		\item In distributed min-conflicts, change to $x_i$ can happen asynchronously with others as long as there is no other change in the neighborhood. %REM
+ 	\end{itemize}
+ 	\item \textbf{Breakout algorithm}:
+ 	\begin{itemize}
+ 		\item Like local s. for solving CSP
+ 		\item Agents repeatedly improve their tentative and bad sets of assignments for variables simultaneously while communicating such tentative sets with each other until finding a solution to an instance of the distributed CPS.
+ 	 	\item similar to min-conflict, but assign dynamic priority to every conflict, initially = 1.
+ 	 \end{itemize}	
+ \end{itemize}
+
+% ========================================================
+
+\section{Game Theory}
+\begin{itemize}
+	\item \textbf{Zero-sum game}: for every outcome, sum of rewards $= 0 \Rightarrow$ pure competition
+	\item \textbf{Strategy}: recipe by which each player chooses its actions.
+	\item \textbf{Pure strategy}: for each state, the action is chosen in a deterministic way.
+	\item \textbf{Mixed strategy}: choose action following a probabilty distribution
+	\item \textbf{Dominant strategy}: strategy which is best for every action of the other player.
+	\item If both players have a strictly dominant strategy $\rightarrow$ unique Nash equilibrium
+	\item \textbf{Weakly dominant strategy}: for every action of the other player, the strategy is at least as good as any other, and it is strictly better for at least one action of the other player.
+	\item \textbf{Very weekly dominant strategy}: for every action of the other player, the strategy is at least as good as any other
+	\item \textbf{Minimax stra.}: maximize gains supposing that the opponent minimize its losses.
+	\item \textbf{Minimax theorem}: In a zero-sum game with 2 players, the average gain $v_A$ of player $A$ using the best mixed minimax strategy is equal to the average loss $v_B$ of player $B$ using its best mixed minimax strategy.
+	\item \textbf{Lottery}: payoff is uncertain
+\end{itemize}
+
+\subsection{Utility Theory}
+\begin{itemize}
+	\item Complete: defined over any pair of outcomes
+	\item Transitivity: $a \succ b \text{ and } b \succ c \rightarrow a \succ c$
+	\item Substitutability, Decomposability
+	\item Monotonicity, Continuity
+\end{itemize}
+
+\subsection{General sum games}
+\begin{itemize}
+	\item \textbf{Nash equilibrium}: no player has an interest to change given that the other doesn't change.
+	\item $\exists$ set of mixed Nash equ. strategies
+	\item Properties of the Nash equ. for player A:
+	\begin{itemize}
+		\item $A$ gets expected payoff $v(A)$
+		\item $\forall a_j \in s(A)$ have expected payoff $v(A)$:
+		\begin{myalign*}
+		    v(A) = \sum_{a_k \in s(B)}p(a_k) R_A(a_j, a_k) 
+		\end{myalign*}
+		\item $\forall a_j \not\in s(A)$ have smaller payoff
+		\begin{myalign*}
+		    v(A) \geq \sum_{a_k \in s(B)}p(a_k) R_A(a_j, a_k)
+		\end{myalign*}
+	\end{itemize}
+	\item Action $a_i$ strictly dominates $a_j$ if for all strategies of the other players, the expected payoff for $a_i$ is greater than that for $a_j$
+	\item \textbf{Computing Nash equ.}: Eliminate all dominated actions, search through all possible supports and solve then for Nash equ.
+	\item \textbf{Conditionally dominated actions}: 
+	\item \textbf{Bayes-Nash equ.}: Use expected utilities
+	
+\end{itemize}
+
+% ========================================================
+\section{Agent Negociation}
+\begin{itemize}
+	\item \textbf{Mediated Equ.}: can ask the mediator to play 
+	\item Mediator can be a mean to enforce a contract.
+
+	\item \textbf{Strategic negotiation}:
+	\begin{itemize}
+	 	\item Agents make and accept/reject offers
+	 	\item \textbf{Alternating offers (AO)} with discount factors
+	 	$\Rightarrow$ last agent doesn't have advantage
+	 	\item Agree at first step $\rightarrow$ max. joint return.
+	 	\item Issue: first agent $\rightarrow$ get a bigger share
+	 \end{itemize}
+
+	\item \textbf{Axiomatic negotiation}:
+	\begin{itemize}
+		\item fix a set of axioms s.t. solution is unique
+	 	\item negotiate according to a protocol that guarantees the axioms.
+	 	\item $u = \text{payoff}(A), v = \text{payoff}(B)$
+	 	\item $u_*, v_* =$ minimal payoff (without coop.)
+	 	\item $\bar{u}, \bar{v} = $ payoff in case of negotiation
+	 	\item \textbf{Pareto-Optimality}: there is no other feasible pair $(u, v)$ which is better for both
+	\end{itemize} 
+	
+	\item \textbf{Nash Bargaining Solution}:
+	\begin{itemize}
+		\item players demand a portion of some good
+		\item If sum <, both players get their request
+		\item if sum >, neither player gets their request
+		\item max. the product of surplus utilities (NE):
+		\begin{myalign*}
+		    (\bar{u}, \bar{v}) = \sup_{u, v} (u - u_*)(v - v_*)
+		\end{myalign*}
+	\end{itemize}
+	\item NE with AO $\rightarrow$ follow framework
+	\begin{itemize}
+		\item goal, a worth and cost assign to each goal.
+		\item Expected utility:
+		\begin{myalign*}
+		    u_i(D_j) = [\sum_{g \in G(D_j)} w_i(g)] - c_i(D_j) 
+		\end{myalign*}
+	\end{itemize}
+
+	\begin{comment}
+		\item \textbf{Pareto-optimal}: $\bar{D}$ is pareto-optimal if there doesn't exist another deal $D_k$ such that for all agents, $u_i(D_k) \geq u_i(\bar{D})$ and for at least one agent, $u_i(D_k) > u_i(\bar{D})$  (i.o.w. $\bar{D}$ is not strictly optimal)
+	\end{comment}
+	
+	\item \textbf{Monotonic concession protocol}: 
+	\begin{itemize}
+		\item AO where offers from each agent must $\uparrow$
+		\item agent with most to lose (high risk) with failure makes next concession
+		\item risk tolerance of agent $i$:
+		\begin{myalign*}
+		    risk_i = \frac{u_i(D_i) - u_i(D_j)}{u_i(D_i) - u_i(D_{worst})}
+		\end{myalign*}
+		$A_i$ rejects offer $D_j$ and proposes $D_i$
+		\item Maximizes product of utility gains and converges towards Nash solution.
+	\end{itemize}
+	\item \textbf{Task Allocation} using the same framework:
+	\item Cost for computing join
+	\item \textbf{Stackelberg games}:
+	\begin{itemize}
+		\item Have a \textit{leader} and a \textit{follower}.
+		\item Decisions are made in sequence
+	\end{itemize}
+\end{itemize}
+
+% ========================================================
+
+\section{Mechanism Design}
+\subsection{Social choice (SC)}
+\begin{itemize}
+	\item \textbf{Axioms for the social choice function F}:
+	\begin{enumerate}
+		\item F always returns a result
+		\item Making $d_j$ more preferable $\forall A_i$ cannot make it less preferable in $F$
+		\item If a change doesn't affect relative order of a subset $\alpha = \{d_{i1}, d_{i2},... \}$, can't change the relative order of choices in $\alpha$ in F.
+		\item F is surjectif
+		\item There is no dictator 
+	\end{enumerate}
+
+	\item \textbf{Arrow's Theorem}: For $k \geq 3$ and $n \geq 2$, there is no SC satisfying all 5 axioms.
+	\item \textbf{Mechanisms}: Map agent actions to outcome
+	\item \textbf{Individual rationality}: Agent should be better off participating than not.
+	\item Difficulty: true agent utilities are private
+	\item \textbf{Truthful mechanisms}: best strat' $\equiv$ truth
+	\item \textbf{Revelation principle}: For any mechanism, there is a truthful mechanism with the same outcome and payments.
+	\item \textbf{Random dictator} is a truthful mechanism
+	\item \textbf{Incentive-compatibility}: when the interaction is structured so that the participant with more information is motivated to act in the interest of the other party (or has less incentive to exploit an informational advantage), the result is incentive compatibility
+	\item \textbf{(VCG)}: pay a tax punishing for the damage done to others $\Rightarrow$ truthful
+	\begin{comment}
+		\begin{align*}
+		    tax(A_i) = \sum_{A_j \in A, i \neq j} (v_j (d - i) - v_j () )
+		\end{align*}
+	\end{comment}
+	
+	\item $\Rightarrow$ waste the tax, not pareto-efficient, hard to apply to large problems, collusion.
+	\item Affine maximizer:
+	\begin{myalign*}
+	    f = \argmax_{d \in D' \subset D}(c_d + \sum_i w_i v_i(d))
+	\end{myalign*}
+	\item \textbf{Groves mechanism}: same as VCG tax but return some of the tax payments to the agents
+	\item \textbf{Median rule} $\Rightarrow$ never profitable for $A_i$ to not be truthful
+\end{itemize}
+
+% ========================================================
+
+\section{Auctions}
+\begin{itemize}
+	\item Forward au.: auc. = seller, highest bid wins
+	\item Reverse au.: auc. = buyer, lowest bid wins
+	\item \textbf{Optimal allocation} (Pareto efficiency): resources end up to who value them the most
+	\item Different auction protocols:
+	\begin{itemize}
+		\item \textbf{Dutch} : Auctioneer continuously lowers price until bidder takes it
+		\item \textbf{English}: Bidders raise their bids until nobody is willing to go any higher
+		\item \textbf{Discriminatory}: Bidders submit one secret bid, item is sold to the highest
+		\item \textbf{Vickrey}: Bidders submit one secret bid, item is sold to the highest bidder, but at the price of the 2nd-highest bid.
+	\end{itemize}
+	\item \textbf{Optimal bid}: just enough to win
+	\item \textbf{Collusion}: buyers coordinate their bidding
+	\item \textbf{Information extraction}: extract private information for use in decision mechanisms.
+	\item \textbf{Scoring Rules}: 
+\end{itemize}
+
+\subsection{Auction Platform}
+\begin{itemize}
+	\item \textbf{Open-cry}: continously changing state, hard to publish information at the same time.
+	\item Timing impossible to guarantee $\leftarrow$ internet
+	\item Bids must be \textit{authentic} and \textit{confidential}
+	\item Solution: \textbf{Interagents}
+	\begin{itemize}
+		\item Can identify registered bidders  
+		\item Cryptographic protocol in between
+		\item Interagent can handle timing functions
+	\end{itemize}
+\end{itemize}
+\subsection{Multi-unit auctions}
+\begin{itemize}
+	\item \textbf{Uniform price auction}:\\
+		n units for sale $\Rightarrow$ pay $n+1$st highest bid
+	\item \textbf{Multi-unit Vickrey auction}: Each agent pays price of the bid it displaced from the set of winning bids $\rightarrow$ significantly lower revenue.
+	\item Still susceptible to manipulation
+\end{itemize}
+\subsection{Double auctions}
+\begin{itemize}
+	\item Both buyers and sellers make bids
+	\item \textbf{Clearing double auctions}:\\
+	all buy bids $\geq$ sell price $\leq$ M-th highest
+	\item M-th price is IC for sellers but not for buyers
+	\item \textbf{McAffee auction}: Price = average of last sell/buy combination $\Rightarrow$ IC
+\end{itemize}
+\subsection{Bidding strategies}
+\begin{itemize}
+	\item Truthful protocols $\Rightarrow$ truth is dominant strat'
+	\item Nash equ.: agent can't do better given the others' strat'
+\end{itemize}
+
+\subsection{Combinatorial valuations}
+\begin{itemize}
+	\item Buyers are looking for combinations of items
+	\item \textbf{Sequential a.}: auction each item individually
+	\begin{itemize}
+		\item bid depends on outcomes of other auctions
+		\item \textbf{Perceived-price bidder}: bid for most profitable comb. based on perceived prices
+		\item \textbf{Straightforward bidding}: bid for all items in most profitable combination
+		\item \textbf{Sunk-aware bidding}: Take into account what bids have already been won. Items already won cannot be returned, so thier price is discounted by factor k.
+		\item \textbf{Price prediction}: predict final prices and select most profitable comb. to bid for.
+	\end{itemize}
+	\item \textbf{Combinatorial auctions}:
+	\begin{itemize}
+		\item Bidders place bids for comb. of items
+		\item Auctioneer decides on best comb. of bids
+		\item determining the winning comb. is NP-hard
+		\item \textbf{Generalized Vickrey Auction (GVA)}: Agent pays for difference between best allocation without its bids and best allocation with its bids. Manipulate with fake bidder. $\Rightarrow$ Non Truthful
+	\end{itemize}
+	\item \textbf{Generalized Second-price auction}: is not IC, not VCG, but prices are more stable.
+\end{itemize}
+
+% ========================================================
+
+\section{Coalitions and Group Decisions}
+\begin{itemize}
+	\item \textbf{Coalitions}: groups cooperate to optimize utility and use SC to agree on joint decisions.
+	\item \textbf{Coalition stability}: coalition N is stable if $ \nexists S \subset N$ gives higher utility $\forall A \in S$ than in $N$
+	\item \textbf{SuperAdditive game}: 
+	$\forall S,T \in N$ if $S \cap T = \varnothing \rightarrow v(S \cup T) \geq v(S) + v(T)$
+	\item \textbf{Convex} games have nonempty core\\
+	$\forall S,T \in N, v(S \cup T) \geq v(S) + v(T) - v(S \cap T)$
+	\item \textbf{Payoff distr.}: how distribute the rewards
+	\item The set of payoff distributions for what the grand coalition is stable is called the \textbf{core} 
+	\item \textbf{Shapley value (SV)}: expected distribution of returns of the game. Unique and in the core. 
+	\item \textbf{Carrier}: minimal coalition s.t. result is always completely decided by these agents
+	\item Game with efficient SV computation:
+	\begin{itemize}
+		\item \textbf{Weighted graph}: agents contribute to coalitions either individually or in pairs. SV is the sum of edge weights in subgraph
+		\item \textbf{Marginal contribution nets}: contribution can be in larger groups
+	\end{itemize}
+	
+\end{itemize}
+\subsection{Group decision making}
+\begin{itemize}
+	\item \textbf{Majority voting}: 2 alternatives, agents vote for favourite. Always CW.
+	\item \textbf{Majority graph}: directed edge from $d_i$ to $d_j$ $\rightarrow$ majority prefers $d_i$ over $d_j$.
+	\item \textbf{Condorcet winner (CW)}: $d_{CW}$ beats or ties all others pairwise majority. CW $\rightarrow$ PO
+	\item \textbf{Plurality voting}: vote for one alternative, order
+	alternatives by number of votes.
+	\item \textbf{Borda count}: voters rank options 
+	\item \textbf{Slater ranking}: among all possible rankings, choose the closest to majority graph.
+	\item \textbf{Kemeny Score}: sum of the win pair-wise against other candidates in the orders given by the agents.
+\end{itemize}
+% ========================================================
+
+
+
+\end{multicols*}
+
+\end{document}
+
+
+% TODO List
+
+% Definitaion of consistenxy and efficiency of an estimator
+
+% MLE properties
+
+% MAE cost function using the log-likelihood with a Laplace distribution
+
